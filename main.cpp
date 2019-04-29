@@ -2,6 +2,8 @@
 #include <cstring>
 #include <ctime>
 #include "arrays.h"
+#include "searches.cpp"
+#include "sorts.cpp"
 
 using namespace std;
 
@@ -33,6 +35,24 @@ double interpolationSearchTime3 = 0.0;
 double interpolationSearchTime4 = 0.0;
 double interpolationSearchTime5 = 0.0;
 double interpolationSearchTime6 = 0.0;
+double heapSortTime1 = 0.0;
+double heapSortTime2 = 0.0;
+double heapSortTime3 = 0.0;
+double heapSortTime4 = 0.0;
+double heapSortTime5 = 0.0;
+double heapSortTime6 = 0.0;
+double shellSortTime1 = 0.0;
+double shellSortTime2 = 0.0;
+double shellSortTime3 = 0.0;
+double shellSortTime4 = 0.0;
+double shellSortTime5 = 0.0;
+double shellSortTime6 = 0.0;
+double combSortTime1 = 0.0;
+double combSortTime2 = 0.0;
+double combSortTime3 = 0.0;
+double combSortTime4 = 0.0;
+double combSortTime5 = 0.0;
+double combSortTime6 = 0.0;
 void timeGet(struct timespec *t)
 {
     clock_gettime(CLOCK_REALTIME, t);
@@ -51,13 +71,13 @@ void timeCopy(struct timespec *dest, struct timespec *source)
     memcpy(dest, source, sizeof(struct timespec));
 }
 
-int binarySearch(int *arr, int left, int right, int target);
-int linearSearch(int *arr, int amount, int target);
-int interpolationSearch(int *arr, int amount, int target);
-
 void testBinarySearch();
 void testLinearSearch();
 void testInterpolationSearch();
+
+void testHeapSort();
+void testShellSort();
+void testCombSort();
 
 int main()
 {
@@ -82,62 +102,28 @@ int main()
     printf("%f microseconds\n", interpolationSearchTime4);
     printf("%f microseconds\n", interpolationSearchTime5);
     printf("%f microseconds\n", interpolationSearchTime6);
+    testHeapSort();
+    printf("%f microseconds\n", heapSortTime1);
+    printf("%f microseconds\n", heapSortTime2);
+    printf("%f microseconds\n", heapSortTime3);
+    printf("%f microseconds\n", heapSortTime4);
+    printf("%f microseconds\n", heapSortTime5);
+    printf("%f microseconds\n", heapSortTime6);
+    testShellSort();
+    printf("%f microseconds\n", shellSortTime1);
+    printf("%f microseconds\n", shellSortTime2);
+    printf("%f microseconds\n", shellSortTime3);
+    printf("%f microseconds\n", shellSortTime4);
+    printf("%f microseconds\n", shellSortTime5);
+    printf("%f microseconds\n", shellSortTime6);
+    testCombSort();
+    printf("%f microseconds\n", combSortTime1);
+    printf("%f microseconds\n", combSortTime2);
+    printf("%f microseconds\n", combSortTime3);
+    printf("%f microseconds\n", combSortTime4);
+    printf("%f microseconds\n", combSortTime5);
+    printf("%f microseconds\n", combSortTime6);
     return 0;
-}
-
-int binarySearch(int *arr, int left, int right, int target)
-{
-    while (left <= right) {
-        int position = left + (right - left) / 2;
-        //check if the target is in the middle
-        if (arr[position] == target)
-            return position;
-        //ignore the left half if the target is larger
-        if (arr[position] < target)
-            left = position + 1;
-        //ignore the right half if the target is smaller
-        else
-            right = position - 1;
-    }
-    //target wasn't found
-    return -1;
-}
-
-int linearSearch(int *arr, int amount, int target)
-{
-    //iterate through the array amount times until the target is found
-    for (int i = 0; i < amount; i++) {
-        if (arr[i] == target)
-            return i;
-    }
-    //target wasn't found
-    return -1;
-}
-
-int interpolationSearch(int *arr, int amount, int target)
-{
-    //find indexes of two corners
-    int lo = 0, hi = amount - 1;
-
-    while (lo <= hi && target >= arr[lo] && target <= arr[hi]) {
-        if (lo == hi) {
-            if (arr[lo] == target)
-                return lo;
-            return -1;
-        }
-        int pos = lo + (((double)(hi - lo) / (arr[hi] - arr[lo])) * (target - arr[lo]));
-        //condition of target found
-        if (arr[pos] == target)
-            return pos;
-        //target is in the upper part
-        if (arr[pos] < target)
-            lo = pos + 1;
-        //target is in the lower part
-        else
-            hi = pos - 1;
-    }
-    //target wasn't found
-    return -1;
 }
 
 void testBinarySearch()
@@ -465,4 +451,113 @@ void testInterpolationSearch()
     interpolationSearchTime6 += (timeDiff(&tstart1, &tend1) +
                                  timeDiff(&tstart2, &tend2) +
                                  timeDiff(&tstart3, &tend3)) / 3;
+}
+void testHeapSort()
+{
+    printf("\nTesting Heap sort\n");
+    
+    struct timespec tstart, tend;
+
+    timeGet(&tstart);
+    heapSort(list1, 10);
+    timeGet(&tend);
+    heapSortTime1 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    heapSort(list2, 100);
+    timeGet(&tend);
+    heapSortTime2 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    heapSort(list3, 1000);
+    timeGet(&tend);
+    heapSortTime3 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    heapSort(list4, 10000);
+    timeGet(&tend);
+    heapSortTime4 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    heapSort(list5, 100000);
+    timeGet(&tend);
+    heapSortTime5 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    heapSort(list6, 250000);
+    timeGet(&tend);
+    heapSortTime6 = timeDiff(&tstart, &tend);
+
+}
+void testShellSort()
+{
+    printf("\nTesting Shell sort\n");
+    
+    struct timespec tstart, tend;
+
+    timeGet(&tstart);
+    shellSort(list1, 10);
+    timeGet(&tend);
+    shellSortTime1 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    shellSort(list2, 100);
+    timeGet(&tend);
+    shellSortTime2 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    shellSort(list3, 1000);
+    timeGet(&tend);
+    shellSortTime3 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    shellSort(list4, 10000);
+    timeGet(&tend);
+    shellSortTime4 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    shellSort(list5, 100000);
+    timeGet(&tend);
+    shellSortTime5 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    shellSort(list6, 250000);
+    timeGet(&tend);
+    shellSortTime6 = timeDiff(&tstart, &tend);
+}
+void testCombSort()
+{
+    printf("\nTesting Comb sort\n");
+    
+    struct timespec tstart, tend;
+
+    timeGet(&tstart);
+    combSort(list1, 10);
+    timeGet(&tend);
+    combSortTime1 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    combSort(list2, 100);
+    timeGet(&tend);
+    combSortTime2 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    combSort(list3, 1000);
+    timeGet(&tend);
+    combSortTime3 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    combSort(list4, 10000);
+    timeGet(&tend);
+    combSortTime4 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    combSort(list5, 100000);
+    timeGet(&tend);
+    combSortTime5 = timeDiff(&tstart, &tend);
+
+    timeGet(&tstart);
+    combSort(list6, 250000);
+    timeGet(&tend);
+    combSortTime6 = timeDiff(&tstart, &tend);
 }
